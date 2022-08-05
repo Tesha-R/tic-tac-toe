@@ -1,0 +1,30 @@
+body {
+    font-family: sans-serif;
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 5px;
+}
+
+.game-board,
+.game-start {
+    width: 500px;
+}
+
+.game-square {
+    height: 100px;
+    text-align: center;
+    font-size: 2.5rem;
+    padding: 1rem;
+    border: 1px solid gray;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-square:hover {
+    background-color: lightgray;
+}
