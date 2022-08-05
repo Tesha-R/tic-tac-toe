@@ -1,11 +1,26 @@
 body {
     font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #192A32;
+}
+
+.game-title {
+    grid-column: span 3;
+}
+
+.game-title,
+.game-message-title {
+    text-align: center;
+    color: white;
 }
 
 .game-board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-gap: 5px;
+    grid-gap: 10px;
 }
 
 .game-board,
@@ -16,15 +31,37 @@ body {
 .game-square {
     height: 100px;
     text-align: center;
-    font-size: 2.5rem;
+    font-size: 4rem;
+    font-weight: 700;
     padding: 1rem;
-    border: 1px solid gray;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #31C4BE;
+    background-color: #1F3540;
+    border-radius: 10px;
+    box-shadow: 0px 5px #0f212b;
 }
 
 .game-square:hover {
-    background-color: lightgray;
+    background-color: #1F3540
+}
+
+button {
+    background-color: #F2B236;
+    border: none;
+    padding: 13px 20px;
+    width: 100%;
+    border-radius: 7px;
+    box-shadow: 0px 5px #c28d25;
+    font-size: 1.15rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: block;
+}
+
+.new-game-btn {
+    width: 300px;
+    margin: 0 auto;
 }

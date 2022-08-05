@@ -6,13 +6,15 @@ let gameData = {
     name: "Player 1",
     gamePiece: "X",
     turn: true,
-    player1Game: ""
+    player1Game: "",
+    score: 0
   },
   player2: {
     name: "Player 2",
     gamePiece: "O",
     turn: false,
-    player2Game: ""
+    player2Game: "",
+    score: 0
   },
   winning: ["012", "345", "678", "036", "147", "258", "048", "246"],
   messages: {
@@ -32,7 +34,7 @@ let gameData = {
 function gameMessage(message) {
     let html = `
   <div class="game-message">
-  <h1>${message}</h1>
+  <h1 class="game-message-title">${message}</h1>
     <button class="new-game-btn">New game</button>
   </div>
   `;
@@ -50,7 +52,7 @@ function checkForWinner() {
     console.log("Player 2 wins");
     gameMessage(gameData.messages.player2wins)
    }
-//    else if(!gameData.winning.includes(gameData.player1.player1Game) || !gameData.winning.includes(gameData.player2.player2Game)){
+//    else {
 //     gameMessage(gameData.messages.gameIsATie)
 //   }
 }
@@ -60,6 +62,8 @@ function startGame() {
   gameData.gameBoard = ["", "", "", "", "", "", "", "", ""];
   gameData.player1.player1Game = "";
   gameData.player2.player2Game = "";
+  gameData.player1.score = 0;
+  gameData.player2.score = 0;
   renderGame(gameData.gameBoard);
 }
 
@@ -68,7 +72,7 @@ function renderGame(dataArr) {
   let html = "";
   dataArr.forEach((item, index) => {
     html += `<div class="game-square" data-id="${index}">${item}</div>`;
-    return (app.innerHTML = `<div class="game-board">${html} </div>`);
+    return (app.innerHTML = `<div class="game-board"><h1 class="game-title">Tic Tac Toe</h1>${html} </div>`);
   });
 }
 
@@ -93,7 +97,6 @@ app.addEventListener("click", (e) => {
     renderGame(gameData.gameBoard);
     gameData.player1.turn = false;
     gameData.player2.turn = true;
-    console.log(checkForWinner())
     checkForWinner();
   } else if (
     e.target.matches(".game-square") &&
@@ -121,4 +124,9 @@ render();
 //   gameData.player2.player1Game += random;
 //   console.log("Computer", gameData.player2.player2Game);
 //   renderGame(gameData.gameBoard);
+// }
+
+// function gameScore(score){
+//     gameData.player1.score = 10;
+//     gameData.player2.score = -10;
 // }
