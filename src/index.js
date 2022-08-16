@@ -8,7 +8,7 @@ let gameData = {
         turn: true,
         score: 0
     },
-    player2: {
+    computer: {
         name: "Player 2",
         gamePiece: "O",
         turn: false,
@@ -26,7 +26,7 @@ let gameData = {
     ],
     messages: {
         player1wins: "Player 1 wins!",
-        player2wins: "Player 2 wins!",
+        computerwins: "Player 2 wins!",
         gameIsATie: "Game is a tie!"
     }
 };
@@ -37,6 +37,8 @@ let gameData = {
 // Select opponent player or computer 
 // Start game
 // Show message for which opponent wins or a tie
+// Can't select game square thats been played
+// Evaluate a tie
 
 function gameMessage(message) {
     let html = `
@@ -59,11 +61,8 @@ function checkForWinner() {
         const winningCombo = winningCombos[i];
         // save each column of numbers to a variable, indexes 0,1,2
         let a = gameBoard[winningCombo[0]]
-        // console.log(a);
         let b = gameBoard[winningCombo[1]]
-        // console.log(b);
         let c = gameBoard[winningCombo[2]]
-        // console.log(c);
         if (a === '' || b === '' || c === '') {
             continue
         }
@@ -72,7 +71,7 @@ function checkForWinner() {
             if (a === 'X' && b === 'X' && c === 'X') {
                 return gameMessage(gameData.messages.player1wins)
             } else if (a === 'O' && b === 'O' && c === 'O') {
-                return gameMessage(gameData.messages.player2wins)
+                return gameMessage(gameData.messages.computerwins)
             }
             // determine a tie
 
@@ -86,9 +85,9 @@ function checkForWinner() {
 function startGame() {
     gameData.gameBoard = ["", "", "", "", "", "", "", "", ""];
     gameData.player1.player1Game = "";
-    gameData.player2.player2Game = "";
+    gameData.computer.computerGame = "";
     gameData.player1.score = 0;
-    gameData.player2.score = 0;
+    gameData.computer.score = 0;
     renderGame(gameData.gameBoard);
 }
 
@@ -113,31 +112,46 @@ app.addEventListener("click", (e) => {
 
 
 
+
+// function gamePlay(currSquare) {
+//     let currentPlayer;
+//     let player1;
+//     if (currentPlayer === player1) {
+//         gameData.gameBoard.splice(currSquare, 1, gameData.player1.gamePiece);
+//         currentPlayer = false
+//     } else {
+//         currentPlayer = player1
+//     }
+// }
 app.addEventListener("click", (e) => {
+    let currentPlayer;
+    let player1;
     // get the current square clicked
     let currSquare = e.target.dataset.id;
-    if (e.target.matches(".game-square") && gameData.player1.turn === true) {
-        // add game piece to corresponding array index
+    if (e.target.matches(".game-square") && currentPlayer === player1) {
         gameData.gameBoard.splice(currSquare, 1, gameData.player1.gamePiece);
         renderGame(gameData.gameBoard);
-        console.log(gameData.gameBoard)
-        gameData.player1.turn = false;
-        gameData.player2.turn = true;
         checkForWinner();
-    } else if (
-        e.target.matches(".game-square") &&
-        gameData.player2.turn === true
-    ) {
-        gameData.gameBoard.splice(currSquare, 1, gameData.player2.gamePiece);
-        renderGame(gameData.gameBoard);
-        console.log(gameData.gameBoard)
-        //  gameData.player2.player2Game += currSquare;
-        console.log("playerGame2", gameData.player2.player2Game);
-        gameData.player2.turn = false;
-        gameData.player1.turn = true;
-        checkForWinner();
+        currentPlayer = false
     }
-});
+    if (!currentPlayer) {
+        setTimeout(() => {
+            computerPlay()
+        }, 1000)
+        currentPlayer = player1
+    }
+})
+
+
+function computerPlay() {
+    let random = Math.floor(Math.random() * gameData.gameBoard.length);
+    //console.log(random);
+    // replaces 1 element at current index
+    gameData.gameBoard.splice(random, 1, gameData.computer.gamePiece);
+    console.log("Computer", gameData.gameBoard);
+    renderGame(gameData.gameBoard);
+    checkForWinner()
+}
 
 function render() {
     renderGame(gameData.gameBoard);
@@ -145,16 +159,9 @@ function render() {
 
 render();
 
-// function computerPlay() {
-//   let random = Math.floor(Math.random() * gameData.gameBoard.length);
-//   console.log(random);
-//   gameData.gameBoard.splice(random, 1, gameData.player2.gamePiece);
-//   gameData.player2.player1Game += random;
-//   console.log("Computer", gameData.player2.player2Game);
-//   renderGame(gameData.gameBoard);
-// }
+
 
 // function gameScore(score){
 //     gameData.player1.score = 10;
-//     gameData.player2.score = -10;
+//     gameData.computer.score = -10;
 // }
