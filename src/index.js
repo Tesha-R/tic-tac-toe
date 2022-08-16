@@ -5,13 +5,11 @@ let gameData = {
     player1: {
         name: "Player 1",
         gamePiece: "X",
-        turn: true,
         score: 0
     },
     computer: {
         name: "Player 2",
         gamePiece: "O",
-        turn: false,
         score: 0
     },
     winningCombos: [
@@ -26,7 +24,7 @@ let gameData = {
     ],
     messages: {
         player1wins: "Player 1 wins!",
-        computerwins: "Player 2 wins!",
+        computerwins: "Computer wins!",
         gameIsATie: "Game is a tie!"
     }
 };
@@ -34,12 +32,44 @@ let gameData = {
 // 3 4 5
 // 6 7 8
 
-// Select opponent player or computer 
-// Start game
 // Show message for which opponent wins or a tie
 // Can't select game square thats been played
 // Evaluate a tie
 
+
+// event listeners
+app.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (e.target.matches(".new-game-btn")) {
+        console.log("new game button clicked");
+        startGame();
+    }
+});
+
+app.addEventListener("click", (e) => {
+    let currentPlayer = true;
+    // get the current square clicked
+    let currSquare = e.target.dataset.id;
+    if (e.target.matches(".game-square") && currentPlayer) {
+        console.log(currSquare + " clicked")
+        gameData.gameBoard.splice(currSquare, 1, gameData.player1.gamePiece);
+        renderGame(gameData.gameBoard);
+        console.log("squareContent", squareContent);
+        checkForWinner();
+        currentPlayer = false
+    }
+    if (!currentPlayer) {
+        setTimeout(() => {
+            computerPlay()
+        }, 1000)
+        currentPlayer = true
+    }
+})
+
+
+// Functions
+
+// Render game messages
 function gameMessage(message) {
     let html = `
   <div class="game-message">
@@ -50,6 +80,7 @@ function gameMessage(message) {
     app.innerHTML += html;
 }
 
+// Check if players won the game
 function checkForWinner() {
     const {
         winningCombos,
@@ -81,7 +112,7 @@ function checkForWinner() {
     }
 }
 
-// new game
+// Start a new game
 function startGame() {
     gameData.gameBoard = ["", "", "", "", "", "", "", "", ""];
     gameData.player1.player1Game = "";
@@ -91,7 +122,7 @@ function startGame() {
     renderGame(gameData.gameBoard);
 }
 
-// render the contents of the gameboard array
+// Render gameboard
 function renderGame(dataArr) {
     let html = "";
     dataArr.forEach((item, index) => {
@@ -99,49 +130,6 @@ function renderGame(dataArr) {
         return (app.innerHTML = `<div class="game-board"><h1 class="game-title">Tic Tac Toe</h1>${html} </div>`);
     });
 }
-
-// event listeners
-
-app.addEventListener("click", (e) => {
-    e.preventDefault();
-    if (e.target.matches(".new-game-btn")) {
-        console.log("new game button clicked");
-        startGame();
-    }
-});
-
-
-
-
-// function gamePlay(currSquare) {
-//     let currentPlayer;
-//     let player1;
-//     if (currentPlayer === player1) {
-//         gameData.gameBoard.splice(currSquare, 1, gameData.player1.gamePiece);
-//         currentPlayer = false
-//     } else {
-//         currentPlayer = player1
-//     }
-// }
-app.addEventListener("click", (e) => {
-    let currentPlayer;
-    let player1;
-    // get the current square clicked
-    let currSquare = e.target.dataset.id;
-    if (e.target.matches(".game-square") && currentPlayer === player1) {
-        gameData.gameBoard.splice(currSquare, 1, gameData.player1.gamePiece);
-        renderGame(gameData.gameBoard);
-        checkForWinner();
-        currentPlayer = false
-    }
-    if (!currentPlayer) {
-        setTimeout(() => {
-            computerPlay()
-        }, 1000)
-        currentPlayer = player1
-    }
-})
-
 
 function computerPlay() {
     let random = Math.floor(Math.random() * gameData.gameBoard.length);
@@ -160,7 +148,7 @@ function render() {
 render();
 
 
-
+// Computer AI
 // function gameScore(score){
 //     gameData.player1.score = 10;
 //     gameData.computer.score = -10;
