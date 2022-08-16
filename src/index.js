@@ -54,7 +54,6 @@ app.addEventListener("click", (e) => {
         console.log(currSquare + " clicked")
         gameData.gameBoard.splice(currSquare, 1, gameData.player1.gamePiece);
         renderGame(gameData.gameBoard);
-        console.log("squareContent", squareContent);
         checkForWinner();
         currentPlayer = false
     }
