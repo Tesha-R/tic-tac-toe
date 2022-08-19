@@ -26,16 +26,12 @@ let gameData = {
         player1wins: "Player 1 wins!",
         computerwins: "Computer wins!",
         gameIsATie: "Game is a tie!"
-    }
+    },
+    gameOver: false
 };
 // 0 1 2
 // 3 4 5
 // 6 7 8
-
-// Show message for which opponent wins or a tie
-// Can't select game square thats been played
-// Evaluate a tie
-
 
 // event listeners
 app.addEventListener("click", (e) => {
@@ -52,12 +48,15 @@ app.addEventListener("click", (e) => {
     let currSquare = e.target.dataset.id;
     if (e.target.matches(".game-square") && currentPlayer) {
         console.log(currSquare + " clicked")
+        // Don't let player overwrite the current square
+        if (gameData.gameBoard[currSquare]) return;
         gameData.gameBoard.splice(currSquare, 1, gameData.player1.gamePiece);
         renderGame(gameData.gameBoard);
         checkForWinner();
         currentPlayer = false
     }
-    if (!currentPlayer) {
+    //  Stop playing if game is over
+    if (!currentPlayer && !gameData.gameOver) {
         setTimeout(() => {
             computerPlay()
         }, 1000)
@@ -93,22 +92,35 @@ function checkForWinner() {
         let a = gameBoard[winningCombo[0]]
         let b = gameBoard[winningCombo[1]]
         let c = gameBoard[winningCombo[2]]
+        if (emptyBoardSpaces()) {
+            return gameMessage(gameData.messages.gameIsATie)
+        }
         if (a === '' || b === '' || c === '') {
             continue
         }
         if (a === b && b === c) {
             console.log("winner", "abc", a, b, c, )
             if (a === 'X' && b === 'X' && c === 'X') {
+                gameData.gameOver = true
                 return gameMessage(gameData.messages.player1wins)
             } else if (a === 'O' && b === 'O' && c === 'O') {
+                gameData.gameOver = true
                 return gameMessage(gameData.messages.computerwins)
+                // If there are no more empty board spaces, game is a tie
             }
             // determine a tie
-
-        } else {
-            console.log("not winner", a, b, c)
         }
+
+        // else {
+        //     console.log("not winner", a, b, c)
+        // }
     }
+}
+
+function emptyBoardSpaces() {
+    gameData.gameBoard.every((space) => {
+        return space !== ""
+    })
 }
 
 // Start a new game
@@ -119,6 +131,7 @@ function startGame() {
     gameData.player1.score = 0;
     gameData.computer.score = 0;
     renderGame(gameData.gameBoard);
+    gameData.gameOver = false
 }
 
 // Render gameboard
