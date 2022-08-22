@@ -45,12 +45,11 @@ app.addEventListener("click", (e) => {
 app.addEventListener("click", (e) => {
     let currentPlayer = true;
     // get the current square clicked
-    let currSquare = e.target.dataset.id;
-    if (e.target.matches(".game-square") && currentPlayer) {
+    let currSquare = e.target.dataset.id
+    if (e.target.matches(".game-square") && currentPlayer && !gameData.gameBoard[currSquare]) {
         console.log(currSquare + " clicked")
-        // Don't let player overwrite the current square
-        if (gameData.gameBoard[currSquare]) return;
         gameData.gameBoard.splice(currSquare, 1, gameData.player1.gamePiece);
+        console.log("gameData.gameBoard[currSquare]", gameData.gameBoard[currSquare])
         renderGame(gameData.gameBoard);
         checkForWinner();
         currentPlayer = false
@@ -92,34 +91,24 @@ function checkForWinner() {
         let a = gameBoard[winningCombo[0]]
         let b = gameBoard[winningCombo[1]]
         let c = gameBoard[winningCombo[2]]
+        // If the board is full of X and O and no winner, game is a tie
         if (emptyBoardSpaces()) {
             return gameMessage(gameData.messages.gameIsATie)
         }
-        if (a === '' || b === '' || c === '') {
-            continue
+        if (a === 'X' && b === 'X' && c === 'X') {
+            gameData.gameOver = true
+            return gameMessage(gameData.messages.player1wins)
         }
-        if (a === b && b === c) {
-            console.log("winner", "abc", a, b, c, )
-            if (a === 'X' && b === 'X' && c === 'X') {
-                gameData.gameOver = true
-                return gameMessage(gameData.messages.player1wins)
-            } else if (a === 'O' && b === 'O' && c === 'O') {
-                gameData.gameOver = true
-                return gameMessage(gameData.messages.computerwins)
-                // If there are no more empty board spaces, game is a tie
-            }
-            // determine a tie
+        if (a === 'O' && b === 'O' && c === 'O') {
+            gameData.gameOver = true
+            return gameMessage(gameData.messages.computerwins)
         }
-
-        // else {
-        //     console.log("not winner", a, b, c)
-        // }
     }
 }
-
+// Is every space filled with 'X' and 'O' / true
 function emptyBoardSpaces() {
-    gameData.gameBoard.every((space) => {
-        return space !== ""
+    return gameData.gameBoard.every((space) => {
+        return space === 'X' || space === 'O';
     })
 }
 
@@ -147,10 +136,14 @@ function computerPlay() {
     let random = Math.floor(Math.random() * gameData.gameBoard.length);
     //console.log(random);
     // replaces 1 element at current index
+    //  if (!gameData.gameBoard[random]) {
+    // replaces 1 element at current index
     gameData.gameBoard.splice(random, 1, gameData.computer.gamePiece);
+    console.log("gameData.gameBoard[random]", gameData.gameBoard[random])
     console.log("Computer", gameData.gameBoard);
     renderGame(gameData.gameBoard);
     checkForWinner()
+    //   }
 }
 
 function render() {
