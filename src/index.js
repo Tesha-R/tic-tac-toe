@@ -2,15 +2,14 @@ const app = document.getElementById("app");
 
 let gameData = {
     gameBoard: ["", "", "", "", "", "", "", "", ""],
+    score: 0,
     player1: {
         name: "Player 1",
         gamePiece: "X",
-        score: 0
     },
     computer: {
         name: "Player 2",
         gamePiece: "O",
-        score: 0
     },
     winningCombos: [
         [0, 1, 2],
@@ -37,7 +36,6 @@ let gameData = {
 app.addEventListener("click", (e) => {
     e.preventDefault();
     if (e.target.matches(".new-game-btn")) {
-        console.log("new game button clicked");
         startGame();
     }
 });
@@ -47,7 +45,7 @@ app.addEventListener("click", (e) => {
     // get the current square clicked
     let currSquare = e.target.dataset.id
     if (e.target.matches(".game-square") && currentPlayer && !gameData.gameBoard[currSquare]) {
-        console.log(currSquare + " clicked")
+        //console.log(currSquare + " clicked")
         gameData.gameBoard.splice(currSquare, 1, gameData.player1.gamePiece);
         console.log("gameData.gameBoard[currSquare]", gameData.gameBoard[currSquare])
         renderGame(gameData.gameBoard);
@@ -58,13 +56,26 @@ app.addEventListener("click", (e) => {
     if (!currentPlayer && !gameData.gameOver) {
         setTimeout(() => {
             computerPlay()
-        }, 1000)
+        }, 700)
         currentPlayer = true
     }
 })
-
-
 // Functions
+
+function computerPlay() {
+    let random = Math.floor(Math.random() * 9);
+    if (!gameData.gameBoard[random]) {
+        gameData.gameBoard.splice(random, 1, gameData.computer.gamePiece);
+        renderGame(gameData.gameBoard);
+        checkForWinner()
+        console.log("gameData.gameBoard[random]", gameData.gameBoard[random])
+        console.log("Computer", gameData.gameBoard);
+    }
+}
+
+function emptySpaces(newBoard) {
+    return newBoard.filter((space) => space !== 'X' && space !== 'O')
+}
 
 // Render game messages
 function gameMessage(message) {
@@ -97,14 +108,19 @@ function checkForWinner() {
         }
         if (a === 'X' && b === 'X' && c === 'X') {
             gameData.gameOver = true
+            gameData.score = 10
+            console.log('gameData.score', gameData.score)
             return gameMessage(gameData.messages.player1wins)
         }
         if (a === 'O' && b === 'O' && c === 'O') {
             gameData.gameOver = true
+            gameData.score = -10
+            console.log('gameData.score', gameData.score)
             return gameMessage(gameData.messages.computerwins)
         }
     }
 }
+
 // Is every space filled with 'X' and 'O' / true
 function emptyBoardSpaces() {
     return gameData.gameBoard.every((space) => {
@@ -115,10 +131,6 @@ function emptyBoardSpaces() {
 // Start a new game
 function startGame() {
     gameData.gameBoard = ["", "", "", "", "", "", "", "", ""];
-    gameData.player1.player1Game = "";
-    gameData.computer.computerGame = "";
-    gameData.player1.score = 0;
-    gameData.computer.score = 0;
     renderGame(gameData.gameBoard);
     gameData.gameOver = false
 }
@@ -132,29 +144,8 @@ function renderGame(dataArr) {
     });
 }
 
-function computerPlay() {
-    let random = Math.floor(Math.random() * gameData.gameBoard.length);
-    //console.log(random);
-    // replaces 1 element at current index
-    //  if (!gameData.gameBoard[random]) {
-    // replaces 1 element at current index
-    gameData.gameBoard.splice(random, 1, gameData.computer.gamePiece);
-    console.log("gameData.gameBoard[random]", gameData.gameBoard[random])
-    console.log("Computer", gameData.gameBoard);
-    renderGame(gameData.gameBoard);
-    checkForWinner()
-    //   }
-}
-
 function render() {
     renderGame(gameData.gameBoard);
 }
 
 render();
-
-
-// Computer AI
-// function gameScore(score){
-//     gameData.player1.score = 10;
-//     gameData.computer.score = -10;
-// }
